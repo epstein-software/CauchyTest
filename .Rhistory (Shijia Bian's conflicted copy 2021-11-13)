@@ -1,0 +1,512 @@
+half_max <- 0.5 * max(temp_slice$Value)
+less_than_half_max_ind <- which(temp_slice$Value <= half_max)
+time_to_half_id <-
+less_than_half_max_ind[less_than_half_max_ind>=which.max(temp_slice$Value)][1]
+if (is.na(time_to_half_id)) {
+smooth_curve_distinct_ID_by_ID_left$Left_BL_Cortical_time_from_max_to_half_max[i] <- 10000
+} else {
+smooth_curve_distinct_ID_by_ID_left$Left_BL_Cortical_time_from_max_to_half_max[i] <-
+temp_slice$Timestamp[time_to_half_id] - temp_slice$Timestamp[which.max(temp_slice$Value)]
+}
+}
+}
+# --- Majority vote
+m <- cbind(smooth_curve_distinct_ID_by_ID_left$Left_BL_Cortical_time_from_max_to_half_max,
+smooth_curve_distinct_ID_by_ID_left$Score_L)
+m <-m[smooth_curve_distinct_ID_by_ID_left$Gender == "male",]
+time_f <- m[complete.cases(m),]
+time_f <- time_f[order(time_f[,2],time_f[,1]),]
+est.p_bsa <- new_func_bsa_1(time_f,
+status = rep(1,dim(time_f)[1]),
+max(level)) # estimated BSA
+est.se <-jack.sd.new_1(time_f,
+status = rep(1,dim(time_f)[1]),
+max(level)) # standard error of BSA
+upper <- inv.fisher(fisher(est.p_bsa)+ qnorm(1-alpha/2)*deriv.fisher(est.p_bsa)*est.se) #Upper limit  of 95% CI
+lower <- inv.fisher(fisher(est.p_bsa)- qnorm(1-alpha/2)*deriv.fisher(est.p_bsa)*est.se) #Lower limit  of 95% CI
+round(est.p_bsa, 3)
+round(est.se, 3)
+round(lower, 3)
+round(upper, 3)
+paste(round(est.p_bsa, 3),
+"(",
+round(est.se, 3),
+";",
+round(lower, 3),
+"-",
+round(upper, 3),
+")")
+smooth_curve_distinct_ID_by_ID_left <- readRDS(file = paste(FilePath,
+"/Data",
+"/Processed",
+"/FeatureDerive",
+"/smooth_curve_distinct_ID_by_ID_left.rds", sep=""))
+smooth_curve_distinct_ID_by_ID_right <- readRDS(file = paste(FilePath,
+"/Data",
+"/Processed",
+"/FeatureDerive",
+"/smooth_curve_distinct_ID_by_ID_right.rds", sep=""))
+########## --------- Feature 6.1: Left cortinal --------- ################
+smooth_curve_distinct_ID_by_ID_left$Left_BL_Cortical_time_from_max_to_half_max <- NA
+for (i in 1:dim(smooth_curve_distinct_ID_by_ID_left)[1]) {
+temp_slice <- complete_smooth_curve %>%
+filter(Patient.Code.Name == smooth_curve_distinct_ID_by_ID_left$Patient.Code.Name[i],
+Study.Date == smooth_curve_distinct_ID_by_ID_left$Study.Date[i],
+Kidney == "Left",
+Study == "Baseline",
+Type == "Cortical")
+temp_slice <- temp_slice %>%
+filter(Process.Date == unique(temp_slice$Process.Date)[1])
+# print(dim(temp_slice)[1])
+if (nrow(temp_slice)>1) {
+time_max <- temp_slice$Timestamp[which.max(temp_slice$Value)]
+half_max <- 0.5 * max(temp_slice$Value)
+less_than_half_max_ind <- which(temp_slice$Value <= half_max)
+time_to_half_id <-
+less_than_half_max_ind[less_than_half_max_ind>=which.max(temp_slice$Value)][1]
+if (is.na(time_to_half_id)) {
+smooth_curve_distinct_ID_by_ID_left$Left_BL_Cortical_time_from_max_to_half_max[i] <- 10000
+} else {
+smooth_curve_distinct_ID_by_ID_left$Left_BL_Cortical_time_from_max_to_half_max[i] <-
+temp_slice$Timestamp[time_to_half_id] - temp_slice$Timestamp[which.max(temp_slice$Value)]
+}
+}
+}
+# --- Majority vote
+m <- cbind(smooth_curve_distinct_ID_by_ID_left$Left_BL_Cortical_time_from_max_to_half_max,
+smooth_curve_distinct_ID_by_ID_left$Score_L)
+m <-m[smooth_curve_distinct_ID_by_ID_left$Gender == "female",]
+time_f <- m[complete.cases(m),]
+time_f <- time_f[order(time_f[,2],time_f[,1]),]
+est.p_bsa <- new_func_bsa_1(time_f,
+status = rep(1,dim(time_f)[1]),
+max(level)) # estimated BSA
+est.se <-jack.sd.new_1(time_f,
+status = rep(1,dim(time_f)[1]),
+max(level)) # standard error of BSA
+upper <- inv.fisher(fisher(est.p_bsa)+ qnorm(1-alpha/2)*deriv.fisher(est.p_bsa)*est.se) #Upper limit  of 95% CI
+lower <- inv.fisher(fisher(est.p_bsa)- qnorm(1-alpha/2)*deriv.fisher(est.p_bsa)*est.se) #Lower limit  of 95% CI
+round(est.p_bsa, 3)
+round(est.se, 3)
+round(lower, 3)
+round(upper, 3)
+paste(round(est.p_bsa, 3),
+"(",
+round(est.se, 3),
+";",
+round(lower, 3),
+"-",
+round(upper, 3),
+")")
+m
+m <- cbind(smooth_curve_distinct_ID_by_ID_left$Left_BL_Cortical_time_from_max_to_half_max,
+smooth_curve_distinct_ID_by_ID_left$Score_L)
+m <-m[smooth_curve_distinct_ID_by_ID_left$Gender == "male",]
+m
+table(m[,1]==10000)
+m <- cbind(smooth_curve_distinct_ID_by_ID_left$Left_BL_Cortical_time_from_max_to_half_max,
+smooth_curve_distinct_ID_by_ID_left$Score_L)
+m <-m[smooth_curve_distinct_ID_by_ID_left$Gender == "female",]
+table(m[,1]==10000)
+setwd("~/Dropbox/Emory Courses/DOHG")
+source("Analysis/result_analysis_source_code.R")
+library(tidyverse)
+setwd("C:/Users/sbian6/Dropbox/Emory Courses/DOHG")
+source("Analysis/result_analysis_source_code.R")
+## --- CCT --- ##
+ls()
+list.files("Result/Oct52021GaMuT468Check/")
+## --- CCT --- ##
+GAMuT_Time <- list.files("Result/Oct52021GaMuT468Check/")
+## --- CCT --- ##
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+grep("GAMuT_time", all_files)
+grep("GAMuT_time", all_files, value = T)
+grep("*.GAMuT_time.*_4", all_files, value = T)
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+grep("*._GAMuT_time_adj_500_subject_dglm_500.*", all_files, value = T)
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+grep("*._GAMuT_time_adj_500_subject_dglm_500.*", all_files, value = T)
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_500 <- grep("*._GAMuT_time_adj_500_subject_dglm_500.*", all_files, value = T)
+for (i in 1:length(subject_500_dglm_500)) {
+file_name <- subject_500_dglm_500[i]
+}
+for (i in 1:length(subject_500_dglm_500)) {
+file_name <- subject_500_dglm_500[i]
+print(file_name)
+}
+load("Result/c4_6_Simulation_HPC/2021-09-27_pvalue_CCT_adj_dglm_10000_subj_1000_pheno_4.RData")
+file_name
+for (i in 1:length(subject_500_dglm_500)) {
+file_name <- subject_500_dglm_500[i]
+load(paste("Result/c4_6_Simulation_HPC/", file_name, sep = ""))
+}
+for (i in 1:length(subject_500_dglm_500)) {
+file_name <- subject_500_dglm_500[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+}
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+library(tidyverse)
+setwd("C:/Users/sbian6/Dropbox/Emory Courses/DOHG")
+source("Analysis/result_analysis_source_code.R")
+############################# QQ-PLOT Type I Error #############################
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_500 <- grep("*._GAMuT_time_adj_500_subject_dglm_500.*", all_files, value = T)
+i=1
+file_name <- subject_500_dglm_500[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+GAMuT_time
+file_name
+setwd("C:\Users/sbian6/Dropbox/Emory Courses/Fall 2021/QTM 100/Lab Datasets/")
+setwd("C:/Users/sbian6/Dropbox/Emory Courses/Fall 2021/QTM 100/Lab Datasets/")
+yrbss <- read.csv("yrbss.csv", header = T)
+yrbss <- read.csv("yrbss2013-1.csv", header = T)
+View(yrbss)
+yrbss <- read.csv("yrbss2013-1.csv", header = T)
+j=1
+paste("sample_prop10", "j", sep = "_")
+paste("sample_prop10", j, sep = "_")
+?assign
+j= 100
+i=1
+print(paste0('i = ', i))
+# Prints the i-th value
+samp <- sample(ride_ddF, j)
+# Creates a vector with 10 samples from the "dd" vector
+sample_prop10[i,] <- prop.table(table(samp))
+# Adds the proportions of samp to the sample_prop10 matrix.
+# The comma after 'i' enters proportion values into the 'i'-th row of the matrix
+new_name <- paste("sample_prop10", j, sep = "_")
+ride_ddF <- factor(yrbss$ride_drunkdriver,levels = c("yes", "no"))
+#changes the character variable ride_drunkdriver into a factor variable
+sample_prop10 <- matrix(rep(NA, 5000), nrow= 5000, ncol = 2)
+#Creates an empty matrix of 5000 rows and 2 columns
+print(paste0('i = ', i))
+# Prints the i-th value
+samp <- sample(ride_ddF, j)
+# Creates a vector with 10 samples from the "dd" vector
+sample_prop10[i,] <- prop.table(table(samp))
+# Adds the proportions of samp to the sample_prop10 matrix.
+# The comma after 'i' enters proportion values into the 'i'-th row of the matrix
+new_name <- paste("sample_prop10", j, sep = "_")
+assign(sample_prop10, new_name)
+assign(new_name, sample_prop10)
+new_name
+sample_prop10_100
+sample_prop10 <- matrix(rep(NA, 5000), nrow= 5000, ncol = 2)
+#Creates an empty matrix of 5000 rows and 2 columns
+table(ride_ddF, yrbss$ride_drunkdriver)
+for (j in c(100, 200, 500)){
+for(i in 1:5000){
+print(paste0('i = ', i))
+# Prints the i-th value
+samp <- sample(ride_ddF, j)
+# Creates a vector with 10 samples from the "dd" vector
+sample_prop10[i,] <- prop.table(table(samp))
+# Adds the proportions of samp to the sample_prop10 matrix.
+# The comma after 'i' enters proportion values into the 'i'-th row of the matrix
+new_name <- paste("sample_prop10", j, sep = "_")
+assign(new_name, sample_prop10)
+sample_prop10 <- matrix(rep(NA, 5000), nrow= 5000, ncol = 2)
+}
+}
+View(sample_prop10_100)
+samp <- sample(ride_ddF, j)
+samp
+prop.table(table(samp))
+sample_prop10[i,] <- prop.table(table(samp))
+sample_prop10 <- matrix(rep(NA, 5000), nrow= 5000, ncol = 2)
+#Creates an empty matrix of 5000 rows and 2 columns
+table(ride_ddF, yrbss$ride_drunkdriver)
+for (j in c(100, 200, 500)){
+for(i in 1:5000){
+print(paste0('i = ', i))
+# Prints the i-th value
+samp <- sample(ride_ddF, j)
+# Creates a vector with 10 samples from the "dd" vector
+sample_prop10[i,] <- prop.table(table(samp))
+# Adds the proportions of samp to the sample_prop10 matrix.
+# The comma after 'i' enters proportion values into the 'i'-th row of the matrix
+}
+new_name <- paste("sample_prop10", j, sep = "_")
+assign(new_name, sample_prop10)
+sample_prop10 <- matrix(rep(NA, 5000), nrow= 5000, ncol = 2)
+}
+barplot(colMeans(sample_prop10_100), ylim = c(0,1))
+barplot(colMeans(sample_prop10_100), names.arg = c('no', 'yes'), ylim = c(0,1))
+prop.table(table(samp))
+barplot(colMeans(sample_prop10_100), names.arg = c('yes', 'no'), ylim = c(0,1))
+barplot(colMeans(sample_prop10_100), names.arg = c('yes', 'no'), ylim = c(0,1))
+barplot(colMeans(sample_prop10_100), names.arg = c('yes', 'no'), ylim = c(0,1))
+barplot(colMeans(sample_prop10_500), names.arg = c('yes', 'no'), ylim = c(0,1))
+rm(list = ls())
+setwd("~/Dropbox/Emory Courses/Fall 2021/QTM 100/")
+## Read in data
+fruitfly= read.csv("Lab Datasets/fruitfly.csv")
+abductees = read.csv("Lab Datasets/abductees.csv")
+### Explore data
+summary(fruitfly)
+summary(abductees)
+### Categorical Variables
+## type in fruitfly
+fruitfly$typeF = as.factor(fruitfly$type)
+levels(fruitfly$typeF) = c("no females", "1 newly pregnant females", "3 newly pregnant females", "1 virgin female", "8 virgin females")
+rm(list = ls())
+setwd("C:/Users/sbian6/Dropbox/Emory Courses/Fall 2021/QTM 100/")
+## Read in data
+fruitfly= read.csv("Lab Datasets/fruitfly.csv")
+abductees = read.csv("Lab Datasets/abductees.csv")
+### Explore data
+summary(fruitfly)
+summary(abductees)
+### Categorical Variables
+## type in fruitfly
+fruitfly$typeF = as.factor(fruitfly$type)
+levels(fruitfly$typeF) = c("no females", "1 newly pregnant females", "3 newly pregnant females", "1 virgin female", "8 virgin females")
+## marital status
+abductees$marstatF =as.factor(abductees$marstat)
+## education levels
+abductees$educatF = cut(abductees$educat, c(0,12, 16, max(abductees$educat, na.rm = TRUE)))
+levels(abductees$educatF) = c("less or equal to high school", "college", "more than college")
+## Abduction feelings
+abductees$abdfeelF = factor(abductees$abdfeel,
+levels = c("Entirely negative", "Mostly negative", "About equally positive and negative","Mostly positive","Entirely positive"))
+### Continuous variables
+abductees$age = 90 - abductees$yearbir
+############################
+###### Q1.
+############################
+mean(fruitfly$lifespan[fruitfly$typeF == "8 virgin females"])
+sd(fruitfly$lifespan[fruitfly$typeF == "8 virgin females"])
+### Assuming lifespan follows a normal distribution,
+## the probability of surviving more than 70 days for the group of male flies supplied with 8 virgin females
+pnorm(q = 70, mean = 38.7,sd = 12.1, lower.tail = FALSE)
+## the probability of surviving more than 70 days for the group of male flies supplied with 8 virgin females
+round(pnorm(q = 70, mean = 38.7,sd = 12.1, lower.tail = FALSE),2)
+pnorm(q = 70, mean = 38.7,sd = 12.1, lower.tail = FALSE)
+fruitflysubset <- fruitfly[fruitfly$typeF == "8 virgin females", ]
+### S1. no assumption about the distribution, calculate the proportion
+sum(fruitflysubset$lifespan>=50)/nrow(fruitflysubset)
+## probability of exactly 1 out of 10 fruit flies surviving at least 50 days
+dbinom(x = 1, size = 10, prob = 0.2)
+## probability of exactly 4 out of 10 fruit flies surviving at least 50 days
+dbinom(x = 4, size = 10, prob = 0.2)
+dbinom(x = 4, size = 10, prob = 0.175)
+## probability of exactly 4 out of 10 fruit flies surviving at least 50 days
+dbinom(x = 4, size = 10, prob = 0.18)
+setwd("C:/Users/sbian6/Dropbox/Emory Courses/Fall 2021/QTM 100/Lab Datasets/")
+#' Loading data
+yrbss <- read.csv("yrbss2013.csv", header = T)
+#' Summary of data
+summary(yrbss)
+yrbss$drive_drunk
+table( yrbss$drive_drunk)
+#' Storing variables as objects:
+drivedrunk <- yrbss$drive_drunk
+unsafeschool <- yrbss$unsafe_school
+#' Summary statistics for drivedrunk
+table(drivedrunk)
+drivedrunk <- factor(drivedrunk)
+prop.table(table(drivedrunk))
+#' Storing variables as objects:
+drivedrunk <- yrbss$drive_drunk
+unsafeschool <- yrbss$unsafe_school
+#' Summary statistics for drivedrunk
+table(drivedrunk)
+drivedrunkF <- factor(drivedrunk)
+table(drivedrunk, drivedrunkF)
+barplot(prop.table(table(drivedrunk)), beside = T)
+table(unsafeschool)
+factor(unsafeschool)
+unsafeschoolF <- factor(unsafeschool, levels =c("no", "yes"))
+prop.table(table(unsafeschoolF))
+#' Proportions of unsafeschool: no = 0.938, yes = 0.062
+#'Creating a bar plot of unsafeschool proportions
+barplot(prop.table(table(unsafeschoolF)), beside = T)
+#' Question 2: Creating 3 for loops for drivedrunk and unsafe
+Surveying the population sample of drivedrunk
+samp1d <- sample(x = drivedrunk, size = 10)
+#' Estimating the proportion using sample proportion
+prop.table(table(samp1d))
+#' Creating for loop
+sample_prop10 <- matrix(rep(NA, 100), nrow= 100, ncol = 2) #ncol is no row
+for(i in 1:100){
+print(paste0('i = ', i))
+sampd <- sample(drivedrunk, 10)
+sample_prop10[i,] <- prop.table(table(sampd))
+}
+sampd
+levels(unsafeschoolF)
+levels(drivedrunkF)
+#' Creating for loop
+sample_prop10 <- matrix(rep(NA, 100), nrow= 100, ncol = 2) #ncol is no row
+for(i in 1:100){
+print(paste0('i = ', i))
+sampd <- sample(drivedrunkF, 10)
+sample_prop10[i,] <- prop.table(table(sampd))
+}
+sampd
+levels(sampd)
+table(sampd)
+#' Creating for loop
+sample_prop10 <- matrix(rep(NA, 100), nrow= 100, ncol = 6) #ncol is no row
+for(i in 1:100){
+print(paste0('i = ', i))
+sampd <- sample(drivedrunkF, 10)
+sample_prop10[i,] <- prop.table(table(sampd))
+}
+prop.table(table(sampd))
+library(tidyverse)
+setwd("C:/Users/sbian6/Dropbox/Emory Courses/DOHG")
+source("Analysis/result_analysis_source_code.R")
+############################# QQ-PLOT Type I Error #############################
+## ---- 500 subjects + 500 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_500 <- grep("*._GAMuT_time_adj_500_subject_dglm_500.*", all_files, value = T)
+for (i in 1:length(subject_500_dglm_500)) {
+file_name <- subject_500_dglm_500[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pval_CCT_4 <- GAMuT_time
+}
+subject_500_dglm_500
+?substr
+nchar(subject_500_dglm_500)
+subject_500_dglm_500
+nchar(file_name)
+substr(file_name, nchar(file_name) - 8, nchar(file_name) - 6)
+substr(file_name, nchar(file_name) - 8, nchar(file_name) - 5)
+substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+library(tidyverse)
+setwd("C:/Users/sbian6/Dropbox/Emory Courses/DOHG")
+source("Analysis/result_analysis_source_code.R")
+## ---- 500 subjects + 500 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_500 <- grep("*._GAMuT_time_adj_500_subject_dglm_500.*", all_files, value = T)
+i = 1
+file_name <- subject_500_dglm_500[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+file_name <- subject_500_dglm_500[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(GAMuT_time, paste("subject_500_dglm_500", pheno, sep = ""))
+paste("subject_500_dglm_500", pheno, sep = "")
+## ---- 500 subjects + 500 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_500 <- grep("*._GAMuT_time_adj_500_subject_dglm_500.*", all_files, value = T)
+for (i in 1:length(subject_500_dglm_500)) {
+file_name <- subject_500_dglm_500[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(GAMuT_time, paste("subject_500_dglm_500", pheno, "_Pheno", sep = ""))
+}
+file_name <- subject_500_dglm_500[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(paste("subject_500_dglm_500", pheno, "_Pheno", sep = ""), GAMuT_time)
+## ---- 500 subjects + 500 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_500 <- grep("*._GAMuT_time_adj_500_subject_dglm_500.*", all_files, value = T)
+for (i in 1:length(subject_500_dglm_500)) {
+file_name <- subject_500_dglm_500[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(paste("subject_500_dglm_500", pheno, "_Pheno", sep = ""), GAMuT_time)
+}
+ls()
+CCT_pvalue_df <- data.frame(subject_500_dglm_500_4_Pheno,
+subject_500_dglm_500_6_Pheno,
+subject_500_dglm_500_8_Pheno)
+apply(CCT_pvalue_df, 2, mean)
+list.files("Result/Oct52021GaMuT468Check/")
+## ---- 500 subjects + 1000 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_1000 <- grep("*._GAMuT_time_adj_500_subject_dglm_1000.*", all_files, value = T)
+for (i in 1:length(subject_500_dglm_1000)) {
+file_name <- subject_500_dglm_1000[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(paste("subject_500_dglm_1000", pheno, "_Pheno", sep = ""), GAMuT_time)
+}
+CCT_pvalue_df <- data.frame(subject_500_dglm_1000_4_Pheno,
+subject_500_dglm_1000_6_Pheno,
+subject_500_dglm_1000_8_Pheno)
+apply(CCT_pvalue_df, 2, mean)
+apply(CCT_pvalue_df, 2, median)
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_2000 <- grep("*._GAMuT_time_adj_500_subject_dglm_2000.*", all_files, value = T)
+## ---- 500 subjects + 2000 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_2000 <- grep("*._GAMuT_time_adj_500_subject_dglm_2000.*", all_files, value = T)
+for (i in 1:length(subject_500_dglm_2000)) {
+file_name <- subject_500_dglm_2000[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(paste("subject_500_dglm_2000", pheno, "_Pheno", sep = ""), GAMuT_time)
+}
+CCT_pvalue_df <- data.frame(subject_500_dglm_2000_4_Pheno,
+subject_500_dglm_2000_6_Pheno,
+subject_500_dglm_2000_8_Pheno)
+apply(CCT_pvalue_df, 2, median)
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_500_dglm_2000 <- grep("*._GAMuT_time_adj_500_subject_dglm_2000.*", all_files, value = T)
+subject_500_dglm_2000
+for (i in 1:length(subject_500_dglm_2000)) {
+file_name <- subject_500_dglm_2000[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(paste("subject_500_dglm_2000", pheno, "_Pheno", sep = ""), GAMuT_time)
+}
+CCT_pvalue_df <- data.frame(subject_500_dglm_2000_4_Pheno,
+subject_500_dglm_2000_6_Pheno,
+subject_500_dglm_2000_8_Pheno)
+apply(CCT_pvalue_df, 2, median)
+grep("*._GAMuT_time_adj_500_subject_dglm_3000.*", all_files, value = T)
+## ---- 1000 subjects + 500 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_1000_dglm_500 <- grep("*._GAMuT_time_adj_1000_subject_dglm_500.*", all_files, value = T)
+subject_1000_dglm_500
+## ---- 1000 subjects + 500 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_1000_dglm_500 <- grep("*._GAMuT_time_adj_1000_subject_dglm_500.*", all_files, value = T)
+for (i in 1:length(subject_1000_dglm_500)) {
+file_name <- subject_1000_dglm_500[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(paste("subject_1000_dglm_500", pheno, "_Pheno", sep = ""), GAMuT_time)
+}
+CCT_pvalue_df <- data.frame(subject_1000_dglm_500_4_Pheno,
+subject_1000_dglm_500_6_Pheno,
+subject_1000_dglm_500_8_Pheno)
+apply(CCT_pvalue_df, 2, median)
+## ---- 1000 subjects + 1000 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_1000_dglm_1000 <- grep("*._GAMuT_time_adj_1000_subject_dglm_1000.*", all_files, value = T)
+for (i in 1:length(subject_1000_dglm_1000)) {
+file_name <- subject_1000_dglm_1000[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(paste("subject_1000_dglm_1000", pheno, "_Pheno", sep = ""), GAMuT_time)
+}
+CCT_pvalue_df <- data.frame(subject_1000_dglm_1000_4_Pheno,
+subject_1000_dglm_1000_6_Pheno,
+subject_1000_dglm_1000_8_Pheno)
+apply(CCT_pvalue_df, 2, median)
+CCT_pvalue_df <- data.frame(subject_1000_dglm_1000_4_Pheno,
+subject_1000_dglm_1000_6_Pheno,
+subject_1000_dglm_1000_8_Pheno)
+apply(CCT_pvalue_df, 2, mean)
+## ---- 1000 subjects + 2000 simulations ---- ###
+all_files <- list.files("Result/Oct52021GaMuT468Check/")
+subject_1000_dglm_2000 <- grep("*._GAMuT_time_adj_1000_subject_dglm_2000.*", all_files, value = T)
+for (i in 1:length(subject_1000_dglm_2000)) {
+file_name <- subject_1000_dglm_2000[i]
+load(paste("Result/Oct52021GaMuT468Check/", file_name, sep = ""))
+pheno = substr(file_name, nchar(file_name) - 7, nchar(file_name) - 6)
+assign(paste("subject_1000_dglm_2000", pheno, "_Pheno", sep = ""), GAMuT_time)
+}
+CCT_pvalue_df <- data.frame(subject_1000_dglm_2000_4_Pheno,
+subject_1000_dglm_2000_6_Pheno,
+subject_1000_dglm_2000_8_Pheno)
+apply(CCT_pvalue_df, 2, mean)

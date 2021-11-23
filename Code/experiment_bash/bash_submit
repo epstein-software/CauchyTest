@@ -1,0 +1,4 @@
+train_jobs_path="/mnt/EpsteinFSS/data/sbian/CauchyTest/Code/experiment_bash"
+line=`head -n $i ${train_jobs_path} | tail -n1`
+n_phenotype=`echo $line | cut -d' ' -f 1`
+n_subject=`echo $line | cut -d' ' -f 2`
