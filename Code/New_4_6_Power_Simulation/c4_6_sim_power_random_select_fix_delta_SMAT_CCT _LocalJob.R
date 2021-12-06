@@ -43,7 +43,7 @@ param_comb <- expand.grid(Nsub   = Nsub_array,
 source('Code/New_4_6_Power_Simulation/c4_6_sim_source_code.R') 
 
 time1 <- Sys.time()
-for (array.id in 79:nrow(param_comb)) {
+for (array.id in 1:nrow(param_comb)) {
   Nsub   <- param_comb[array.id, "Nsub"]
   Npheno <- param_comb[array.id, "Npheno"]
   maf    <- param_comb[array.id, "maf"]
@@ -102,7 +102,7 @@ for (array.id in 79:nrow(param_comb)) {
     set.seed(2021 + isim)
     
     if (isim == 487) {
-      set.seed(2021 + isim*3)
+      set.seed(2021 + isim)
     }
     #' Each subject has their own X and W. Within each subject, X and W are fixed,
     #' but the coefficients vary again the phenotypes. The phenotypes vary by 

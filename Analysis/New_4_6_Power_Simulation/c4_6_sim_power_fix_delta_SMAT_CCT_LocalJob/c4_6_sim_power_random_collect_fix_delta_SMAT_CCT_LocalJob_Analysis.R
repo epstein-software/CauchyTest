@@ -609,3 +609,147 @@ dat <- full_df %>%
             count_less_005_60000 = sum(pvalue <= 0.05/60000),
             .groups="drop")
 
+#' Given the same number of phenotype, maf (same for all originally), 
+#' delta, delta_select and method, p-value are different for different gamma
+specify_decimal <- function(x, k) trimws(format(round(x, k), nsmall=k))
+
+######### Phenotype is 8
+gamma_015 <- 
+  full_df %>%
+  filter(Npheno == 8,
+         delta == 1,
+         delta_select == 0.75,
+         gamma == 0.15)
+sum(gamma_015$SMAT <= 0.05/50000) # 7
+specify_decimal(mean(gamma_015$SMAT), 20) # 0.01343130059667276693
+specify_decimal(mean(gamma_015$CCT), 20)  # 0.00043311829323283403
+specify_decimal(mean(gamma_015$CCT_includeXsquare), 20)  # 0.00034450325588403154
+
+specify_decimal(median(gamma_015$SMAT), 20) # 0.00247922534895639313
+specify_decimal(median(gamma_015$CCT), 20)  # 0.00001122445
+specify_decimal(median(gamma_015$CCT_includeXsquare), 20)  # 0.0000008520913
+
+specify_decimal(max(gamma_015$SMAT), 20) # 0.48949447667456835731
+specify_decimal(max(gamma_015$CCT), 20)  # 0.02737312842337480401
+specify_decimal(max(gamma_015$CCT_includeXsquare), 20)  # 0.07169513212008116199
+
+specify_decimal(min(gamma_015$SMAT), 20) # 5.690977e-09
+specify_decimal(min(gamma_015$CCT), 20)  # 3.183187e-11
+specify_decimal(min(gamma_015$CCT_includeXsquare), 20)  # 4.4409e-16
+
+gamma_025 <- 
+  full_df %>%
+  filter(Npheno == 8,
+         delta == 1,
+         delta_select == 0.75,
+         gamma == 0.25)
+sum(gamma_025$SMAT <= 0.05/50000) # 7
+specify_decimal(mean(gamma_025$SMAT), 20) # 0.01343130059667275132
+specify_decimal(mean(gamma_025$CCT), 20)  # 0.00043311829323283468
+specify_decimal(mean(gamma_025$CCT_includeXsquare), 20)  # 0.00034450325588407350
+
+specify_decimal(median(gamma_025$SMAT), 20) # 0.00247922534895639313
+specify_decimal(median(gamma_025$CCT), 20)  # 0.00001122445
+specify_decimal(median(gamma_025$CCT_includeXsquare), 20)  # 0.0000008520913
+
+specify_decimal(max(gamma_025$SMAT), 20) # 0.48949447667455991962
+specify_decimal(max(gamma_025$CCT), 20)  # 0.02737312842337469299
+specify_decimal(max(gamma_025$CCT_includeXsquare), 20)  # 0.07169513212008526981
+
+specify_decimal(min(gamma_025$SMAT), 20) # 5.690977e-09
+specify_decimal(min(gamma_025$CCT), 20)  # 3.183187e-11
+specify_decimal(min(gamma_025$CCT_includeXsquare), 20)  # 4.4409e-16
+
+gamma_035 <- 
+  full_df %>%
+  filter(Npheno == 8,
+         delta == 1,
+         delta_select == 0.75,
+         gamma == 0.35)
+sum(gamma_035$SMAT <= 0.05/50000) # 7
+specify_decimal(mean(gamma_035$SMAT), 20)  # 0.01343130059667275999
+specify_decimal(mean(gamma_035$CCT), 20)   # 0.00043311829323283712
+specify_decimal(mean(gamma_035$CCT_includeXsquare), 20)  # 0.00034450325588423938
+
+specify_decimal(median(gamma_035$SMAT), 20) # 0.00247922534895639313
+specify_decimal(median(gamma_035$CCT), 20)  # 0.00001122445
+specify_decimal(median(gamma_035$CCT_includeXsquare), 20)  # 0.0000008520913
+
+specify_decimal(max(gamma_035$SMAT), 20) # 0.48949447667456946753
+specify_decimal(max(gamma_035$CCT), 20)  # 0.02737312842337469299
+specify_decimal(max(gamma_035$CCT_includeXsquare), 20)  # 0.07169513212008515879
+
+specify_decimal(min(gamma_035$SMAT), 20) # 5.690977e-09
+specify_decimal(min(gamma_035$CCT), 20)  # 3.183187e-11
+specify_decimal(min(gamma_035$CCT_includeXsquare), 20)  # 4.4409e-16
+
+######### Phenotype is 12
+gamma_015 <- 
+  full_df %>%
+  filter(Npheno == 12,
+         delta == 1,
+         delta_select == 0.75,
+         gamma == 0.15)
+sum(gamma_015$SMAT <= 0.05/50000) # 13
+specify_decimal(mean(gamma_015$SMAT), 20) # 0.02245105569822626254
+specify_decimal(mean(gamma_015$CCT), 20)  # 0.00017748158796399526
+specify_decimal(mean(gamma_015$CCT_includeXsquare), 20)  # 7.927125e-05
+
+specify_decimal(median(gamma_015$SMAT), 20) # 0.00275967613626793007
+specify_decimal(median(gamma_015$CCT), 20)  # 0.00001122445
+specify_decimal(median(gamma_015$CCT_includeXsquare), 20)  # 0.0000008520913
+
+specify_decimal(max(gamma_015$SMAT), 20) # 0.78691592406092625289
+specify_decimal(max(gamma_015$CCT), 20)  # 0.02158895824613304981
+specify_decimal(max(gamma_015$CCT_includeXsquare), 20)  # 0.00913191681141212186
+
+specify_decimal(min(gamma_015$SMAT), 20) # 8.618284e-11
+specify_decimal(min(gamma_015$CCT), 20)  # 1.044564e-11
+specify_decimal(min(gamma_015$CCT_includeXsquare), 20)  # 8.8818e-16
+
+gamma_025 <- 
+  full_df %>%
+  filter(Npheno == 12,
+         delta == 1,
+         delta_select == 0.75,
+         gamma == 0.25)
+sum(gamma_025$SMAT <= 0.05/50000) # 13
+specify_decimal(mean(gamma_025$SMAT), 20) # 0.02245105569822614111
+specify_decimal(mean(gamma_025$CCT), 20)  # 0.00017748158796399694
+specify_decimal(mean(gamma_025$CCT_includeXsquare), 20)  # 7.927125e-05
+
+specify_decimal(median(gamma_025$SMAT), 20) # 0.00275967613626804109
+specify_decimal(median(gamma_025$CCT), 20)  # 4.826216e-06
+specify_decimal(median(gamma_025$CCT_includeXsquare), 20)  # 2.721883e-07
+
+specify_decimal(max(gamma_025$SMAT), 20) # 0.78691592406093091583
+specify_decimal(max(gamma_025$CCT), 20)  # 0.02158895824613293879
+specify_decimal(max(gamma_025$CCT_includeXsquare), 20)  # 0.00913191681141212186
+
+specify_decimal(min(gamma_025$SMAT), 20) # 8.618284e-11
+specify_decimal(min(gamma_025$CCT), 20)  # 1.044564e-11
+specify_decimal(min(gamma_025$CCT_includeXsquare), 20)  # 8.8818e-16
+
+gamma_035 <- 
+  full_df %>%
+  filter(Npheno == 12,
+         delta == 1,
+         delta_select == 0.75,
+         gamma == 0.35)
+sum(gamma_035$SMAT <= 0.05/50000) # 13
+specify_decimal(mean(gamma_035$SMAT), 20)  # 0.02245105569822625907
+specify_decimal(mean(gamma_035$CCT), 20)   # 0.00017748158796399339
+specify_decimal(mean(gamma_035$CCT_includeXsquare), 20)  # 7.927125e-05, 
+# different from gamma = 0.15 or gamma = 0.25 
+
+specify_decimal(median(gamma_035$SMAT), 20) # 0.00275967613626793007
+specify_decimal(median(gamma_035$CCT), 20)  # 4.826216e-06
+specify_decimal(median(gamma_035$CCT_includeXsquare), 20)  # 2.721883e-07
+
+specify_decimal(max(gamma_035$SMAT), 20) # 0.78691592406092536471
+specify_decimal(max(gamma_035$CCT), 20)  # 0.02158895824613282777
+specify_decimal(max(gamma_035$CCT_includeXsquare), 20)  # 0.00913191681141212186
+
+specify_decimal(min(gamma_035$SMAT), 20) # 8.618284e-11
+specify_decimal(min(gamma_035$CCT), 20)  # 1.044564e-11
+specify_decimal(min(gamma_035$CCT_includeXsquare), 20)  # 8.8818e-16

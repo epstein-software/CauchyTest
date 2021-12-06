@@ -40,3 +40,39 @@ Nsim         <- 1000
 - Exploring UKB data shared by Lori
 - Getting some preliminary result for type I error. I might focus on SMAT and CCT. GAMuT needs a longer time to complete.
 - Utilize GitHub
+
+## December 5th, 2021
+
+This simulation will exclude GAMuT. Therefore, two new folders are created to perform this simulation
+
+New_4_6_Simulation_ExcludeGAMUT
+
+
+### Type I simulation
+
+
+- Exclude GAMuT
+- 100,000
+
+The seed might need to be modified as adding `set.seed(20211205 + sim_Npheno*10 + array.id*2)`.
+
+```r
+
+for (sim_Npheno in 1:Npheno) {
+  set.seed(20211205 + sim_Npheno*10 + array.id*2)
+  
+  # randomly-generated intercept for phenotypes
+  int_array[sim_Npheno] <- rnorm(1, 0, 5) 
+  
+  # randomly-generated main effect of SNP on phenotypes
+  main_beta_g_array[sim_Npheno] <- runif(1, 0, 0.2)
+  
+  # randomly-generate main effect of continuous covariate on genotype
+  # Random simulate gamma is gamma == NA
+  if (is.na(gamma)) {
+    main_gamma_con_array[sim_Npheno] <- runif(1, 0, 0.2)
+  } else {
+    main_gamma_con_array[sim_Npheno] <- gamma
+  }
+}
+```
