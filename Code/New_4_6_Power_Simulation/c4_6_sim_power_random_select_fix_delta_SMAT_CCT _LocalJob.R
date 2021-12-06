@@ -59,8 +59,9 @@ for (array.id in 1:nrow(param_comb)) {
   main_delta_con_array <- array(NA,dim=c(Npheno))
   delta_select_array   <- array(NA,dim=c(Npheno))
   
+  #' Revise seed by adding array.id*2 on Dec 05, 2021
   for (sim_Npheno in 1:Npheno) {
-    set.seed(20211101 + sim_Npheno)
+    set.seed(20211101 + sim_Npheno + array.id*2)
     
     # randomly-generated intercept for phenotypes
     int_array[sim_Npheno] <- rnorm(1, 0, 5) 

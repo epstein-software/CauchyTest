@@ -45,21 +45,37 @@ Nsim         <- 1000
 
 This simulation will exclude GAMuT. Therefore, two new folders are created to perform this simulation
 
-New_4_6_Simulation_ExcludeGAMUT
+- New_4_6_Simulation_ExcludeGAMUT
+	+ This is for type I error simulation
 
 
 ### Type I simulation
 
+Your job-array 444755.1-40:1 ("type_i_err_100000_sim") has been submitted
 
-- Exclude GAMuT
-- 100,000
+#### Revision
 
-The seed might need to be modified as adding `set.seed(20211205 + sim_Npheno*10 + array.id*2)`.
+1. Add X^2 to SMAT
+2. Force the time to be seconds
+3. Make the value of gamma a little bigger
+4. Random seed is revised to ensure
+
+The setting:
+
+```r
+Nsub_array   <- c(5000, 10000)
+Npheno_array <- c(4, 6, 8, 10, 12)
+maf_array    <- c(0.25)
+gamma_array  <- c(NA, 0.15, 0.55, 0.95)
+Nsim         <- 1
+```
+
+The seed might need to be modified as adding `set.seed(sim_Npheno*10 + array.id*2 + sample(1:500000000, 1))`.
 
 ```r
 
 for (sim_Npheno in 1:Npheno) {
-  set.seed(20211205 + sim_Npheno*10 + array.id*2)
+  set.seed(sim_Npheno*10 + array.id*2 + sample(1:500000000, 1))
   
   # randomly-generated intercept for phenotypes
   int_array[sim_Npheno] <- rnorm(1, 0, 5) 

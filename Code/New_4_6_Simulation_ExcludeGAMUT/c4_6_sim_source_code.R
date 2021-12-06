@@ -22,7 +22,8 @@ scale_dglm <- function(y,
 
 SMAT_cor_cov_dglm<-function(sim_y,
                             sim_g,
-                            sim_z){
+                            sim_z,
+                            includeXsquare = FALSE){
   
   obs_sub_y <- nrow(sim_y)
   obs_gene_y <- ncol(sim_y)
@@ -52,10 +53,25 @@ SMAT_cor_cov_dglm<-function(sim_y,
                 sim_z)
   
   # Code for this f found in SMAT_code.R
-  SMAT_pvalue <- SMAT(Z,
-                      Xcov,
-                      sim_g)$pvalue 
+  if (includeXsquare == FALSE) {
+    Xcov <- cbind(rep(1,obs_sub_y),
+                  sim_z)
+    
+    SMAT_pvalue <- SMAT(Z,
+                        Xcov,
+                        sim_g)$pvalue 
+  } 
   
+  if (includeXsquare == TRUE) {
+    Xcov <- cbind(rep(1,obs_sub_y),
+                  sim_z,
+                  sim_z^2)
+    
+    SMAT_pvalue <- SMAT(Z,
+                        Xcov,
+                        sim_g)$pvalue 
+  }
+
   return(SMAT_pvalue)
 }
 
