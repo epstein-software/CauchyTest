@@ -101,7 +101,9 @@ For some unknown reason, HGCC deleted most of my jobs. There are currently only 
 
 ### Type II simulation
 
-The script was under folder `Code\CNew_4_6_Power_Simulation_ExcludeGAMUT`.
+The script was under folder `Code\CNew_4_6_Power_Simulation_ExcludeGAMUT`. 
+
+This job is running on Harvard cluster. HGCC does not have enough resource.
 
 ```r
 Nsub_array   <- c(5000, 10000)
