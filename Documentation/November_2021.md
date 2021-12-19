@@ -92,3 +92,24 @@ for (sim_Npheno in 1:Npheno) {
   }
 }
 ```
+
+## December 19, 2021
+
+### Type I simulation Update
+
+For some unknown reason, HGCC deleted most of my jobs. There are currently only 5 jobs are running. Not sure what happened. 5 jobs have finished renning. I might need to re-submit the 30 jobs.
+
+### Type II simulation
+
+The script was under folder `Code\CNew_4_6_Power_Simulation_ExcludeGAMUT`.
+
+```r
+Nsub_array   <- c(5000, 10000)
+Npheno_array <- c(4, 6, 8, 10, 12)
+maf_array    <- 0.25
+gamma_array  <- c(NA, 0.15, 0.55, 0.95)
+delta_array  <- c(0.5, 0.75, 1, 1.25)
+delta_select_array <- c(0.25, 0.5, 0.75, 1)
+Nsim         <- 10000
+```
+
