@@ -24,43 +24,35 @@ setwd("/n/holystore01/LABS/xlin/Lab/xihaoli/DOHG/")
 
 Nsub_array   <- c(5000, 10000)
 Npheno_array <- c(4, 6, 8, 10, 12)
-maf_array    <- 0.25
+maf_array    <- c(0.25)
 gamma_array  <- c(NA, 0.15, 0.55, 0.95)
-delta_array  <- c(0.5, 0.75, 1, 1.25)
-delta_select_array <- c(0.25, 0.5, 0.75, 1)
+job_slice_array <- seq(1, 100)
 Nsim         <- 10000
-
 
 param_comb <- expand.grid(Nsub   = Nsub_array,
                           Npheno = Npheno_array,
                           maf    = maf_array,
                           gamma  = gamma_array,
-                          delta  = delta_array,
-                          delta_select = delta_select_array)
+                          JobSlice = job_slice_array)
 
 paste("----------Start:", array.id, "out of", dim(param_comb)[1], "----------", sep = " ")
-
-source('Code/New_4_6_Power_Simulation_ExcludeGAMUT/c4_6_sim_source_code.R') 
 
 Nsub   <- param_comb[array.id, "Nsub"]
 Npheno <- param_comb[array.id, "Npheno"]
 maf    <- param_comb[array.id, "maf"]
 gamma  <- param_comb[array.id, "gamma"]
-delta  <- param_comb[array.id, "delta"]
-delta_select  <- param_comb[array.id, "delta_select"]
+JobSlice <- param_comb[array.id, "JobSlice"]
+
+source('Code/New_4_6_Simulation_ExcludeGAMUT/c4_6_sim_source_code.R') 
 
 #' Seed used for simulating the coefficients, the coefficients will be fixed in
 #' the beginning. Instead of random simulating like this, we could 
 int_array            <- array(NA,dim=c(Npheno))
 main_beta_g_array    <- array(NA,dim=c(Npheno))
 main_gamma_con_array <- array(NA,dim=c(Npheno))
-main_delta_con_array <- array(NA,dim=c(Npheno))
-delta_select_array   <- array(NA,dim=c(Npheno))
 
+set.seed( (array.id-1)%%40 + 1)
 
-set.seed(array.id)
-
-#' Revise seed by adding array.id*2 on Dec 05, 2021
 for (sim_Npheno in 1:Npheno) {
   
   # randomly-generated intercept for phenotypes
@@ -70,16 +62,12 @@ for (sim_Npheno in 1:Npheno) {
   main_beta_g_array[sim_Npheno] <- runif(1, 0, 0.2)
   
   # randomly-generate main effect of continuous covariate on genotype
+  # Random simulate gamma is gamma == NA
   if (is.na(gamma)) {
     main_gamma_con_array[sim_Npheno] <- runif(1, 0, 0.2)
   } else {
     main_gamma_con_array[sim_Npheno] <- gamma
   }
-  # randomly-generate main effect of interaction term
-  main_delta_con_array[sim_Npheno] <- delta
-  
-  # Sparsity indicator for the interaction effect
-  delta_select_array[sim_Npheno] <- rbinom(1, 1, delta_select)
 }
 
 #' Number of off-diagonal elements in covariance matrix of phenotype
@@ -87,12 +75,12 @@ for (sim_Npheno in 1:Npheno) {
 Num_off_diag <- gamma(Npheno+1)/(gamma(3)*gamma(Npheno+1-2)) 
 
 # Initialize arrays/vectors to contain p-values and time 
-# pval_GAMuT_ProjMatrix_adj_dglm   <- array(NA,dim=c(Nsim))
-# pval_GAMuT_LineKernel_adj_dglm   <- array(NA,dim=c(Nsim))
-pval_SMAT_adj_dglm               <- array(NA,dim=c(Nsim))
+# pval_GAMuT_ProjMatrix_adj_dglm <- array(NA,dim=c(Nsim))
+# pval_GAMuT_LineKernel_adj_dglm <- array(NA,dim=c(Nsim))
+pval_SMAT_adj_dglm                <- array(NA,dim=c(Nsim))
 pval_SMAT_includeXsquare_adj_dglm <- array(NA,dim=c(Nsim))
-pval_CCT_adj_dglm                <- array(NA,dim=c(Nsim))
-pval_includeXsquare_CCT_adj_dglm <- array(NA,dim=c(Nsim))
+pval_CCT_adj_dglm                 <- array(NA,dim=c(Nsim))
+pval_includeXsquare_CCT_adj_dglm  <- array(NA,dim=c(Nsim))
 
 # GAMuT_ProjMatrix_time = c()
 # GAMuT_LineKernel_time = c()
@@ -103,7 +91,9 @@ CCT_includeXsquare_time = c()
 simulation_time = c()
 
 for(isim in 1:Nsim) {
-  set.seed(isim)
+  
+  set.seed(isim + 10000*(JobSlice - 1))
+  
   start_time <- Sys.time()
   
   #' Each subject has their own X and W. Within each subject, X and W are fixed,
@@ -112,18 +102,14 @@ for(isim in 1:Nsim) {
   #'  simulated Y 
   X     <- rbinom(Nsub, 2, maf)
   W_con <- rnorm(Nsub, 0, 1)
-  
+
   sim_Y     <- matrix(, nrow = Nsub, ncol = Npheno)
   sim_error <- matrix(, nrow = Nsub, ncol = Npheno)
   
   for (ipheno in 1:Npheno) {
     
     e_error <- rnorm(Nsub, 0, 1)
-    Y <- int_array[ipheno] + 
-      main_beta_g_array[ipheno]*X + 
-      main_gamma_con_array[ipheno]*W_con + 
-      main_delta_con_array[ipheno]*delta_select_array[ipheno]*X*W_con +
-      e_error
+    Y <- int_array[ipheno] + main_beta_g_array[ipheno]*X + main_gamma_con_array[ipheno]*W_con + e_error
     
     sim_error[,ipheno] <- e_error
     sim_Y[,ipheno]     <- Y
@@ -155,6 +141,7 @@ for(isim in 1:Nsim) {
   SMAT_includeXsquare_time = c(SMAT_includeXsquare_time, 
                                SMAT_includeXsquare_temp)
   
+  
   # Test for differential co-expression using the Cauchy combination test
   CCT_START = Sys.time()
   pval_CCT_adj_dglm[isim] <- CCT_cor_cov_dglm(sim_y = sim_Y, 
@@ -178,7 +165,7 @@ for(isim in 1:Nsim) {
     as.numeric(CCT_includeXsquare_END - CCT_includeXsquare_START, units="secs")
   CCT_includeXsquare_time = c(CCT_includeXsquare_time, 
                               CCT_includeXsquare_temp)
-
+  
   end_time <- Sys.time()  
   one_sim_time <- as.numeric(end_time - start_time, units="secs")
   simulation_time = c(simulation_time, one_sim_time)
@@ -188,37 +175,35 @@ for(isim in 1:Nsim) {
   }
 }
 
+file_name_SMAT_pvalue               <- paste("pvalue", "SMAT", "adj", "dglm", Nsim, "JobSlice", JobSlice, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
+file_name_includeXsquare_SMAT_pvalue <- paste("pvalue", "includeXsquare_SMAT", "adj", "dglm", Nsim, "JobSlice", JobSlice, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
+file_name_CCT_pvalue                <- paste("pvalue", "CCT", "adj", "dglm", Nsim, "JobSlice", JobSlice, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
+file_name_includeXsquare_CCT_pvalue <- paste("pvalue", "includeXsquare_CCT", "adj", "dglm", Nsim, "JobSlice", JobSlice, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
 
-file_name_SMAT_pvalue               <- paste("pvalue_power", "SMAT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
-file_name_includeXsquare_SMAT_pvalue <- paste("pvalue_power", "includeXsquare_SMAT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
-file_name_CCT_pvalue                <- paste("pvalue_power", "CCT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
-file_name_includeXsquare_CCT_pvalue <- paste("pvalue_power", "includeXsquare_CCT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
-
-file_SMAT_time                <- paste("time_power", "SMAT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
-file_includeXsquare_SMAT_time <- paste("time_power", "includeXsquare_SMAT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
-file_CCT_time                 <- paste("time_power", "CCT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
-file_includeXsquare_CCT_time  <- paste("time_power", "includeXsquare_CCT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
-file_simulation_time          <- paste("time_power", "simulation_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
-
+file_SMAT_time                <- paste("time", "SMAT_time", "adj", "dglm", Nsim, "JobSlice", JobSlice, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
+file_includeXsquare_SMAT_time <- paste("time", "includeXsquare_SMAT_time", "adj", "dglm", Nsim, "JobSlice", JobSlice, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
+file_CCT_time                 <- paste("time", "CCT_time", "adj", "dglm", Nsim, "JobSlice", JobSlice, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
+file_includeXsquare_CCT_time  <- paste("time", "includeXsquare_CCT_time", "adj", "dglm", Nsim, "JobSlice", JobSlice, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
+file_simulation_time          <- paste("time", "simulation_time", "adj", "dglm", Nsim, "JobSlice", JobSlice, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
 
 save(pval_SMAT_adj_dglm, 
-     file = paste("Result/New_4_6_Power_Simulation_ExcludeGAMUT/", file_name_SMAT_pvalue, ".RData", sep = ""))
+     file = paste("Result/New_4_6_Simulation_ExcludeGAMUT/", file_name_SMAT_pvalue, ".RData", sep = ""))
 save(pval_SMAT_includeXsquare_adj_dglm, 
-     file = paste("Result/New_4_6_Power_Simulation_ExcludeGAMUT/", file_name_includeXsquare_SMAT_pvalue, ".RData", sep = ""))
+     file = paste("Result/New_4_6_Simulation_ExcludeGAMUT/", file_name_includeXsquare_SMAT_pvalue, ".RData", sep = ""))
 save(pval_CCT_adj_dglm, 
-     file = paste("Result/New_4_6_Power_Simulation_ExcludeGAMUT/", file_name_CCT_pvalue, ".RData", sep = ""))
+     file = paste("Result/New_4_6_Simulation_ExcludeGAMUT/", file_name_CCT_pvalue, ".RData", sep = ""))
 save(pval_includeXsquare_CCT_adj_dglm, 
-     file = paste("Result/New_4_6_Power_Simulation_ExcludeGAMUT/", file_name_includeXsquare_CCT_pvalue, ".RData", sep = ""))
+     file = paste("Result/New_4_6_Simulation_ExcludeGAMUT/", file_name_includeXsquare_CCT_pvalue, ".RData", sep = ""))
 
 save(simulation_time, 
-     file = paste("Result/New_4_6_Power_Simulation_ExcludeGAMUT/", file_simulation_time, ".RData", sep = ""))
+     file = paste("Result/New_4_6_Simulation_ExcludeGAMUT/", file_simulation_time, ".RData", sep = ""))
 save(SMAT_time, 
-     file = paste("Result/New_4_6_Power_Simulation_ExcludeGAMUT/", file_SMAT_time, ".RData", sep = ""))
+     file = paste("Result/New_4_6_Simulation_ExcludeGAMUT/", file_SMAT_time, ".RData", sep = ""))
 save(SMAT_includeXsquare_time, 
-     file = paste("Result/New_4_6_Power_Simulation_ExcludeGAMUT/", file_includeXsquare_SMAT_time, ".RData", sep = ""))
+     file = paste("Result/New_4_6_Simulation_ExcludeGAMUT/", file_includeXsquare_SMAT_time, ".RData", sep = ""))
 save(CCT_time, 
-     file = paste("Result/New_4_6_Power_Simulation_ExcludeGAMUT/", file_CCT_time, ".RData", sep = ""))
+     file = paste("Result/New_4_6_Simulation_ExcludeGAMUT/", file_CCT_time, ".RData", sep = ""))
 save(CCT_includeXsquare_time, 
-     file = paste("Result/New_4_6_Power_Simulation_ExcludeGAMUT/", file_includeXsquare_CCT_time, ".RData", sep = ""))
+     file = paste("Result/New_4_6_Simulation_ExcludeGAMUT/", file_includeXsquare_CCT_time, ".RData", sep = ""))
 
 paste("----------End:", array.id, "out of", dim(param_comb)[1], "----------", sep = " ")

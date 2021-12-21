@@ -113,5 +113,30 @@ gamma_array  <- c(NA, 0.15, 0.55, 0.95)
 delta_array  <- c(0.5, 0.75, 1, 1.25)
 delta_select_array <- c(0.25, 0.5, 0.75, 1)
 Nsim         <- 10000
+
+
+
+param_comb <- expand.grid(Nsub   = Nsub_array,
+                          Npheno = Npheno_array,
+                          maf    = maf_array,
+                          gamma  = gamma_array,
+                          delta  = delta_array,
+                          delta_select = delta_select_array)
 ```
+
+## December 19, 2021
+
+### Type I simulation
+
+```r
+Nsub_array   <- c(5000, 10000)
+Npheno_array <- c(4, 6, 8, 10, 12)
+maf_array    <- c(0.25)
+gamma_array  <- c(NA, 0.15, 0.55, 0.95)
+job_slice_array <- seq(1, 100)
+Nsim         <- 10000
+
+```
+
+
 

@@ -31,7 +31,7 @@ maf_array    <- 0.25
 gamma_array  <- c(NA, 0.15, 0.55, 0.95)
 delta_array  <- c(0.5, 0.75, 1, 1.25)
 delta_select_array <- c(0.25, 0.5, 0.75, 1)
-Nsim         <- 10
+Nsim         <- 10000
 
 
 param_comb <- expand.grid(Nsub   = Nsub_array,
@@ -192,16 +192,16 @@ for(isim in 1:Nsim) {
 }
 
 
-file_name_SMAT_pvalue               <- paste("pvalue_power", "SMAT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
-file_name_includeXsquar_SMAT_pvalue <- paste("pvalue_power", "includeXsquar_SMAT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
-file_name_CCT_pvalue                <- paste("pvalue_power", "CCT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
-file_name_includeXsquare_CCT_pvalue <- paste("pvalue_power", "includeXsquare_CCT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
+file_name_SMAT_pvalue               <- paste("pvalue_power", "SMAT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
+file_name_includeXsquar_SMAT_pvalue <- paste("pvalue_power", "includeXsquar_SMAT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
+file_name_CCT_pvalue                <- paste("pvalue_power", "CCT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
+file_name_includeXsquare_CCT_pvalue <- paste("pvalue_power", "includeXsquare_CCT", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
 
-file_SMAT_time                <- paste("time_power", "SMAT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
-file_includeXsquare_SMAT_time <- paste("time_power", "includeXsquare_SMAT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
-file_CCT_time                 <- paste("time_power", "CCT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
-file_includeXsquare_CCT_time  <- paste("time_power", "includeXsquare_CCT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
-file_simulation_time          <- paste("time_power", "simulation_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, sep = "_")
+file_SMAT_time                <- paste("time_power", "SMAT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
+file_includeXsquare_SMAT_time <- paste("time_power", "includeXsquare_SMAT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
+file_CCT_time                 <- paste("time_power", "CCT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
+file_includeXsquare_CCT_time  <- paste("time_power", "includeXsquare_CCT_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
+file_simulation_time          <- paste("time_power", "simulation_time", "adj", "dglm", Nsim, "subj", Nsub, "pheno", Npheno, "MAF", maf, "Gamma", gamma, "Delta", delta, "DeltaSelect", delta_select, sep = "_")
 
 
 save(pval_SMAT_adj_dglm, 
