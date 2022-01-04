@@ -1,0 +1,20 @@
+#!/bin/bash
+#SBATCH -n 1                    # Number of cores
+#SBATCH -N 1                    # Ensure that all cores are on one machine
+#SBATCH -t 7-00:00              # Runtime in D-HH:MM
+#SBATCH -p shared,xlin          # Partition to submit to
+#SBATCH --mem=3000              # Memory pool for all cores (see also --mem-per-cpu)
+#SBATCH --array=230,368,370,380,400,410,420,508,560,570,580,590,600,610,620,630,640,650,660,670,680,690,700,710,720,730,740,880,890,900,910,920,930,940,1190,1280,1320,1330,1340,1350,1380,1390,1400,1410,1420,1430,1440,1460,1480,1520,1540,1550,1710,1720,1730,1740,1790,1850,1870,1880,2000,2110,2240,2260,2290,2300,2310,2360,2470,2620,2640,2680,2720,2760,2780,2850,2920,2960,3020,3600,3830          # Create array job
+#SBATCH --mail-type=ALL         # Type of email notification- BEGIN,END,FAIL,ALL
+#SBATCH --mail-user=xihaoli@g.harvard.edu  # Email to which notifications will be sent
+
+module purge
+module load gcc/9.2.0-fasrc01
+module load intel-mkl/2019.5.281-fasrc01
+module load tcl/8.6.9-fasrc01
+module load tk/8.6.9-fasrc01
+module load R/4.0.2-fasrc01
+export R_LIBS_USER=$HOME/apps/R-4.0.2-MKL
+
+/n/home01/xihaoli/R-4.0.2/bin/R --vanilla --args ${SLURM_ARRAY_TASK_ID} < $1 > "${1}.${SLURM_ARRAY_TASK_ID}.R.out" 2> "${1}.${SLURM_ARRAY_TASK_ID}.R.err"
+
