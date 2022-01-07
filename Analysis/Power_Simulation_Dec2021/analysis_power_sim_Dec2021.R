@@ -236,18 +236,18 @@ delta_select_array  <- c(0.25, 0.5, 0.75, 1)
 param_comb_plot2 <- expand.grid(gamma         = gamma_array,
                                 delta_select  = delta_select_array)
 
-for (index in 1:nrow(param_comb_plot1)) {
+for (index in 1:nrow(param_comb_plot2)) {
   gamma_val <- param_comb_plot2[index, "gamma"]
   delta_select_val <- param_comb_plot2[index, "delta_select"]
   
   if (is.na(gamma_val)){
     temp_df <- full_pvalue_df %>%
-      select(-maf) %>%
+      dplyr::select(-maf) %>%
       filter(is.na(gamma),
              delta_select == delta_select_val)    
   } else {
     temp_df <- full_pvalue_df %>%
-      select(-maf) %>%
+      dplyr::select(-maf) %>%
       filter(gamma == gamma_val,
              delta_select == delta_select_val)
   }
@@ -257,7 +257,7 @@ for (index in 1:nrow(param_comb_plot1)) {
   }
   
   temp_df_F <- temp_df %>%
-    select(-gamma, -delta_select) %>%
+    dplyr::select(-gamma, -delta_select) %>%
     gather(., 
            key = "Method", 
            value = "Power",
@@ -303,7 +303,7 @@ for (index in 1:nrow(param_comb_plot1)) {
     geom_line(aes(linetype=Method, color = Method))+
     ggtitle(paste("Power Simulation with gamma =", gamma_val, "and sparsity =", delta_select_val)) +
     labs(subtitle = expression(The~pre-specified~threshold~is~5~X~10^-2)) +
-    xlab("Sparsity: decreases from 0 to 1") + 
+    xlab("Delta: 0.5, 0.75, 1, 1.25") + 
     ylab(expression(Percent~less~than~the~threshold~5~X~10^-2)) +
     theme(
       plot.subtitle = element_text(color="black", size=16, face="bold.italic"),
@@ -325,7 +325,7 @@ for (index in 1:nrow(param_comb_plot1)) {
     geom_line(aes(linetype=Method, color = Method))+
     ggtitle(paste("Power Simulation with gamma =", gamma_val, "and sparsity =", delta_select_val)) +
     labs(subtitle = expression(The~pre-specified~threshold~is~5~X~10^-6)) +
-    xlab("Sparsity: decreases from 0 to 1") + 
+    xlab("Delta: 0.5, 0.75, 1, 1.25") + 
     #ylab(expression("Percent less than the specified threshold: 0.05/10000", expression(5 X 10^{-6}))) +
     ylab(expression(Percent~less~than~the~threshold~5~X~10^-6)) +
     theme(
@@ -347,7 +347,7 @@ for (index in 1:nrow(param_comb_plot1)) {
     geom_line(aes(linetype=Method, color = Method))+
     ggtitle(paste("Power Simulation with gamma =", gamma_val, "and sparsity =", delta_select_val)) +
     labs(subtitle = expression(The~pre-specified~threshold~is~1~X~10^-6)) +
-    xlab("Sparsity: decreases from 0 to 1") + 
+    xlab("Delta: 0.5, 0.75, 1, 1.25") + 
     #ylab(expression("Percent less than the specified threshold: 0.05/10000", expression(5 X 10^{-6}))) +
     ylab(expression(Percent~less~than~the~threshold~1~X~10^-6)) +
     theme(
@@ -369,7 +369,7 @@ for (index in 1:nrow(param_comb_plot1)) {
     geom_line(aes(linetype=Method, color = Method))+
     ggtitle(paste("Power Simulation with gamma =", gamma_val, "and sparsity =", delta_select_val)) +
     labs(subtitle = expression(The~pre-specified~threshold~is~1~X~10^-7)) +
-    xlab("Sparsity: decreases from 0 to 1") + 
+    xlab("Delta: 0.5, 0.75, 1, 1.25") + 
     #ylab(expression("Percent less than the specified threshold: 0.05/10000", expression(5 X 10^{-6}))) +
     ylab(expression(Percent~less~than~the~threshold~1~X~10^-7)) +
     theme(

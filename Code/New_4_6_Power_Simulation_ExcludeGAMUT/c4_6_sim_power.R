@@ -58,8 +58,7 @@ int_array            <- array(NA,dim=c(Npheno))
 main_beta_g_array    <- array(NA,dim=c(Npheno))
 main_gamma_con_array <- array(NA,dim=c(Npheno))
 main_delta_con_array <- array(NA,dim=c(Npheno))
-delta_select_array   <- array(NA,dim=c(Npheno))
-
+delta_select_array   <- array(0,dim=c(Npheno))
 
 set.seed(array.id)
 
@@ -82,8 +81,11 @@ for (sim_Npheno in 1:Npheno) {
   main_delta_con_array[sim_Npheno] <- delta
   
   # Sparsity indicator for the interaction effect
-  delta_select_array[sim_Npheno] <- rbinom(1, 1, delta_select)
+  # delta_select_array[sim_Npheno] <- rbinom(1, 1, delta_select)
 }
+
+one_impute <- sample(1:Npheno, ceiling(Npheno*delta_select), replace = F)
+delta_select_array[one_impute] <- 1
 
 #' Number of off-diagonal elements in covariance matrix of phenotype
 #' (within subject)
