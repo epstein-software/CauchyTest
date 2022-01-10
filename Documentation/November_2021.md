@@ -139,4 +139,24 @@ Nsim         <- 10000
 ```
 
 
+## January 2, 2022
 
+### Type I simulation
+
+Type I simulation has completed. 
+
+# January 9, 2022
+
+### Type I simulation
+
+Type I simulation has been completed. The plots have been plotted.
+
+### Power simulation
+
+Power simulation has completed. The plot has been completed.
+
+Tried another set of delta to observe more detailed performance comparison between CCT and SMAT:
+
+```r
+delta_array  <- c(0.1, 0.2, 0.3, 0.4)
+```
