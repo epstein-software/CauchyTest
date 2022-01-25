@@ -16,4 +16,5 @@ delta_select_array <- c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
 c4_6_sim_power_20220114.R
 delta_array <- c(0.35, 0.45, 0.6, 1.5)
 
-
+c4_6_sim_power_20220120.R
+delta_array <- c(0.15, 0.25, 0.55, 0.65)

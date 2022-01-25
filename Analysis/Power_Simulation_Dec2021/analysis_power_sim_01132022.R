@@ -72,7 +72,7 @@ for (array.id in 1:nrow(param_comb)) {
 ############### Fix number of subject, gamma and delta #########################
 
 gamma_array  <- c(NA, 0.15, 0.55, 0.95)
-delta_array  <- c(0.5, 0.75, 1, 1.25)
+delta_array  <- c(0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.25)
 
 param_comb_plot1 <- expand.grid(gamma  = gamma_array,
                                 delta  = delta_array)
@@ -252,7 +252,7 @@ for (index in 1:nrow(param_comb_plot2)) {
              delta_select == delta_select_val)
   }
   
-  if (nrow(temp_df) != 400000) {
+  if (nrow(temp_df) != 800000) {
     stop("data slice is incorrect")
   }
   
@@ -281,7 +281,7 @@ for (index in 1:nrow(param_comb_plot2)) {
               Percent_less_than_alpha_fiv_th = sum(less_than_alpha_fiv_th)/Total_Count,
               Percent_less_than_alpha_ten_th = sum(less_than_alpha_ten_th)/Total_Count,
               Percent_is_zero                = sum(is_zero)/Total_Count) 
-  temp_df_F$delta_F = factor(temp_df_F$delta)
+  # temp_df_F$delta_F = factor(temp_df_F$delta)
   
   # Un-comment this if you remove the one with 0 and produce the plots starting with
   # remove_zero_
@@ -299,11 +299,11 @@ for (index in 1:nrow(param_comb_plot2)) {
   }
   
   ggplot(temp_df_F, 
-         aes(x = delta_F, y = Percent_less_than_alpha,  group=Method)) +
+         aes(x = delta, y = Percent_less_than_alpha,  group=Method)) +
     geom_line(aes(linetype=Method, color = Method))+
     ggtitle(paste("Power Simulation with gamma =", gamma_val, "and sparsity =", delta_select_val)) +
     labs(subtitle = expression(The~pre-specified~threshold~is~5~X~10^-2)) +
-    xlab("Delta: 0.5, 0.75, 1, 1.25") + 
+    xlab("Delta: 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.25") + 
     ylab(expression(Percent~less~than~the~threshold~5~X~10^-2)) +
     theme(
       plot.subtitle = element_text(color="black", size=16, face="bold.italic"),
@@ -321,11 +321,11 @@ for (index in 1:nrow(param_comb_plot2)) {
   
   
   ggplot(temp_df_F, 
-         aes(x = delta_F, y = Percent_less_than_alpha_one_th,  group=Method)) +
+         aes(x = delta, y = Percent_less_than_alpha_one_th,  group=Method)) +
     geom_line(aes(linetype=Method, color = Method))+
     ggtitle(paste("Power Simulation with gamma =", gamma_val, "and sparsity =", delta_select_val)) +
     labs(subtitle = expression(The~pre-specified~threshold~is~5~X~10^-6)) +
-    xlab("Delta: 0.5, 0.75, 1, 1.25") + 
+    xlab("Delta: 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.25") + 
     #ylab(expression("Percent less than the specified threshold: 0.05/10000", expression(5 X 10^{-6}))) +
     ylab(expression(Percent~less~than~the~threshold~5~X~10^-6)) +
     theme(
@@ -343,11 +343,11 @@ for (index in 1:nrow(param_comb_plot2)) {
   
   
   ggplot(temp_df_F, 
-         aes(x = delta_F, y = Percent_less_than_alpha_fiv_th,  group=Method)) +
+         aes(x = delta, y = Percent_less_than_alpha_fiv_th,  group=Method)) +
     geom_line(aes(linetype=Method, color = Method))+
     ggtitle(paste("Power Simulation with gamma =", gamma_val, "and sparsity =", delta_select_val)) +
     labs(subtitle = expression(The~pre-specified~threshold~is~1~X~10^-6)) +
-    xlab("Delta: 0.5, 0.75, 1, 1.25") + 
+    xlab("Delta: 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.25") + 
     #ylab(expression("Percent less than the specified threshold: 0.05/10000", expression(5 X 10^{-6}))) +
     ylab(expression(Percent~less~than~the~threshold~1~X~10^-6)) +
     theme(
@@ -365,11 +365,11 @@ for (index in 1:nrow(param_comb_plot2)) {
   
   
   ggplot(temp_df_F, 
-         aes(x = delta_F, y = Percent_less_than_alpha_ten_th,  group=Method)) +
+         aes(x = delta, y = Percent_less_than_alpha_ten_th,  group=Method)) +
     geom_line(aes(linetype=Method, color = Method))+
     ggtitle(paste("Power Simulation with gamma =", gamma_val, "and sparsity =", delta_select_val)) +
     labs(subtitle = expression(The~pre-specified~threshold~is~1~X~10^-7)) +
-    xlab("Delta: 0.5, 0.75, 1, 1.25") + 
+    xlab("Delta: 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.25") + 
     #ylab(expression("Percent less than the specified threshold: 0.05/10000", expression(5 X 10^{-6}))) +
     ylab(expression(Percent~less~than~the~threshold~1~X~10^-7)) +
     theme(
